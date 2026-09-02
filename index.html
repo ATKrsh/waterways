@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waterways | Unified Water Management & Automation Panel</title>
+    <meta name="description" content="A premium DIY home automation panel for monitoring, controlling, and simulating multi-tank water supply systems with dry-run and overflow protections.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- CSS Link -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="water-droplet-icon"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Waterways</h1>
+                    <span class="sub-logo">Unified Sump & Tank Automation</span>
+                </div>
+            </div>
+            <div class="header-status">
+                <div class="status-indicator">
+                    <span class="status-dot pulsing" id="connection-status-dot"></span>
+                    <span id="connection-status-text">System Live (Simulation)</span>
+                </div>
+                <div class="time-display" id="current-time-display">12:00:00 PM</div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="app-workspace">
+            <!-- Left Side: Interactive Schematic & Live Telemetry -->
+            <section class="schematic-section">
+                <div class="card glassmorphic schematic-card">
+                    <div class="card-header">
+                        <h2>System Topology & Flow Schematic</h2>
+                        <div class="telemetry-badges">
+                            <span class="badge" id="flow-rate-badge">Flow: 0.0 L/m</span>
+                            <span class="badge" id="total-capacity-badge">Total Water: 4,200L / 7,800L</span>
+                        </div>
+                    </div>
+                    <div class="schematic-viewport">
+                        <!-- SVG Schematic Diagram -->
+                        <svg viewBox="0 0 900 600" id="plumbing-schematic" class="svg-diagram">
+                            <!-- Background Grid Pattern -->
+                            <defs>
+                                <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                                    <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255, 255, 255, 0.02)" stroke-width="1"/>
+                                </pattern>
+                                <linearGradient id="waterGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stop-color="#0066cc" stop-opacity="0.85" />
+                                    <stop offset="70%" stop-color="#00bfff" stop-opacity="0.75" />
+                                    <stop offset="100%" stop-color="#33ccff" stop-opacity="0.9" />
+                                </linearGradient>
+                                <linearGradient id="sumpGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stop-color="#0044aa" stop-opacity="0.9" />
+                                    <stop offset="100%" stop-color="#0088ff" stop-opacity="0.8" />
+                                </linearGradient>
+                                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="5" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#grid)" />
+
+                            <!-- Pipes Layout (Visual connections) -->
+                            <!-- Outside source to Valve A1 -->
+                            <path id="pipe-outside-to-a1" class="pipe" d="M 50,530 L 150,530 L 150,420" />
+                            <!-- Reservoir to Valve A1 -->
+                            <path id="pipe-sump-to-a1" class="pipe" d="M 450,490 L 220,490 L 220,420" />
+                            
+                            <!-- Valve A1 Intake Selector to Motor A -->
+                            <path id="pipe-a1-to-motor-a" class="pipe" d="M 185,390 L 185,310 L 250,310" />
+
+                            <!-- Motor A Output to Valve A2 Output Selector -->
+                            <path id="pipe-motor-a-to-a2" class="pipe" d="M 310,310 L 375,310" />
+
+                            <!-- Valve A2 Output Selector to Reservoir -->
+                            <path id="pipe-a2-to-sump" class="pipe" d="M 405,340 L 405,420 L 490,420" />
+                            <!-- Valve A2 Output Selector to Terrace Bathroom Tanks -->
+                            <path id="pipe-a2-to-bathrooms" class="pipe" d="M 405,280 L 405,80 L 630,80" />
+                            <!-- Branch pipes for Bathroom Tanks 1 & 2 -->
+                            <path id="pipe-bath-branch1" class="pipe" d="M 630,80 L 630,130" />
+                            <path id="pipe-bath-branch2" class="pipe" d="M 760,80 L 760,130" />
+
+                            <!-- Reservoir to Motor B Intake -->
+                            <path id="pipe-sump-to-motor-b" class="pipe" d="M 600,490 L 600,380 M 600,380 L 650,380" />
+                            <!-- Motor B Output to Kitchen Tank -->
+                            <path id="pipe-motor-b-to-kitchen" class="pipe" d="M 710,380 L 820,380 L 820,180" />
+
+                            <!-- Active water flow overlays (initially hidden/animated in JS) -->
+                            <path id="flow-outside-to-a1" class="pipe-flow" d="M 50,530 L 150,530 L 150,420" />
+                            <path id="flow-sump-to-a1" class="pipe-flow" d="M 450,490 L 220,490 L 220,420" />
+                            <path id="flow-a1-to-motor-a" class="pipe-flow" d="M 185,390 L 185,310 L 250,310" />
+                            <path id="flow-motor-a-to-a2" class="pipe-flow" d="M 310,310 L 375,310" />
+                            <path id="flow-a2-to-sump" class="pipe-flow" d="M 405,340 L 405,420 L 490,420" />
+                            <path id="flow-a2-to-bathrooms" class="pipe-flow" d="M 405,280 L 405,80 L 630,80" />
+                            <path id="flow-bath-branch1" class="pipe-flow" d="M 630,80 L 630,130" />
+                            <path id="flow-bath-branch2" class="pipe-flow" d="M 630,80 L 760,80 L 760,130" />
+                            <path id="flow-sump-to-motor-b" class="pipe-flow" d="M 600,490 L 600,380 L 650,380" />
+                            <path id="flow-motor-b-to-kitchen" class="pipe-flow" d="M 710,380 L 820,380 L 820,180" />
+
+                            <!-- Node: Outside Municipal Connection -->
+                            <g id="node-outside" class="node-group">
+                                <circle cx="50" cy="530" r="18" class="source-node" />
+                                <text x="50" y="565" text-anchor="middle" class="node-label">Municipal Connection</text>
+                                <text x="50" y="534" text-anchor="middle" class="node-icon-text" id="outside-water-status">ON</text>
+                            </g>
+
+                            <!-- Node: Underground Reservoir (Sump) -->
+                            <g id="node-sump" class="tank-node">
+                                <rect x="450" y="420" width="180" height="110" rx="10" class="tank-body" />
+                                <rect id="level-mask-sump" x="452" y="422" width="176" height="106" rx="8" class="water-fill-rect" fill="url(#sumpGrad)" />
+                                <!-- Wavy pattern top on water -->
+                                <path id="wave-sump" d="M 452,422 Q 474,417 496,422 T 540,422 T 584,422 T 628,422" fill="url(#sumpGrad)" class="wave-path" />
+                                <text x="540" y="465" text-anchor="middle" class="tank-label">Underground Reservoir</text>
+                                <text x="540" y="490" text-anchor="middle" class="tank-liters" id="telemetry-sump-liters">0L / 5000L</text>
+                                <text x="540" y="510" text-anchor="middle" class="tank-pct" id="telemetry-sump-pct">0%</text>
+                            </g>
+
+                            <!-- Node: Bathroom Tank 1 (1000L) -->
+                            <g id="node-bath1" class="tank-node">
+                                <rect x="580" y="130" width="100" height="90" rx="8" class="tank-body" />
+                                <rect id="level-mask-bath1" x="582" y="132" width="96" height="86" rx="6" class="water-fill-rect" fill="url(#waterGrad)" />
+                                <path id="wave-bath1" d="M 582,132 Q 594,128 606,132 T 630,132 T 654,132 T 678,132" fill="url(#waterGrad)" class="wave-path" />
+                                <text x="630" y="170" text-anchor="middle" class="tank-label-small">Bathroom 1</text>
+                                <text x="630" y="188" text-anchor="middle" class="tank-liters-small" id="telemetry-bath1-liters">0L</text>
+                                <text x="630" y="202" text-anchor="middle" class="tank-pct-small" id="telemetry-bath1-pct">0%</text>
+                            </g>
+
+                            <!-- Node: Bathroom Tank 2 (1000L) -->
+                            <g id="node-bath2" class="tank-node">
+                                <rect x="710" y="130" width="100" height="90" rx="8" class="tank-body" />
+                                <rect id="level-mask-bath2" x="712" y="132" width="96" height="86" rx="6" class="water-fill-rect" fill="url(#waterGrad)" />
+                                <path id="wave-bath2" d="M 712,132 Q 724,128 736,132 T 760,132 T 784,132 T 808,132" fill="url(#waterGrad)" class="wave-path" />
+                                <text x="760" y="170" text-anchor="middle" class="tank-label-small">Bathroom 2</text>
+                                <text x="760" y="188" text-anchor="middle" class="tank-liters-small" id="telemetry-bath2-liters">0L</text>
+                                <text x="760" y="202" text-anchor="middle" class="tank-pct-small" id="telemetry-bath2-pct">0%</text>
+                            </g>
+
+                            <!-- Node: Kitchen Tank (800L) -->
+                            <g id="node-kitchen" class="tank-node">
+                                <rect x="770" y="280" width="100" height="80" rx="8" class="tank-body" />
+                                <rect id="level-mask-kitchen" x="772" y="282" width="96" height="76" rx="6" class="water-fill-rect" fill="url(#waterGrad)" />
+                                <path id="wave-kitchen" d="M 772,282 Q 784,278 796,282 T 820,282 T 844,282 T 868,282" fill="url(#waterGrad)" class="wave-path" />
+                                <text x="820" y="315" text-anchor="middle" class="tank-label-small">Kitchen</text>
+                                <text x="820" y="333" text-anchor="middle" class="tank-liters-small" id="telemetry-kitchen-liters">0L</text>
+                                <text x="820" y="347" text-anchor="middle" class="tank-pct-small" id="telemetry-kitchen-pct">0%</text>
+                            </g>
+
+                            <!-- Valve A1: Intake selector valve -->
+                            <g id="node-valve-a1" class="valve-group">
+                                <circle cx="185" cy="405" r="16" class="valve-housing" />
+                                <polygon points="175,397 195,413 175,413 195,397" class="valve-butterfly" />
+                                <circle cx="185" cy="405" r="5" class="valve-core" />
+                                <text x="135" y="408" text-anchor="end" class="valve-label">Valve A1 (Intake)</text>
+                                <text x="185" y="432" text-anchor="middle" class="valve-status-text" id="status-valve-a1">OUTSIDE</text>
+                            </g>
+
+                            <!-- Valve A2: Output selector valve -->
+                            <g id="node-valve-a2" class="valve-group">
+                                <circle cx="390" cy="310" r="16" class="valve-housing" />
+                                <polygon points="380,302 400,318 380,318 400,302" class="valve-butterfly" />
+                                <circle cx="390" cy="310" r="5" class="valve-core" />
+                                <text x="390" y="275" text-anchor="middle" class="valve-label">Valve A2 (Output)</text>
+                                <text x="440" y="314" text-anchor="start" class="valve-status-text" id="status-valve-a2">SUMP</text>
+                            </g>
+
+                            <!-- Motor A: Big Motor (Outside/Sump & Terrace) -->
+                            <g id="node-motor-a" class="motor-group">
+                                <rect x="250" y="285" width="60" height="50" rx="5" class="motor-body" />
+                                <circle cx="280" cy="310" r="16" class="motor-fan" />
+                                <path d="M 280,294 L 280,326 M 264,310 L 296,310" class="motor-fan-blades" id="fan-motor-a" />
+                                <text x="280" y="270" text-anchor="middle" class="motor-label">Motor A (Big)</text>
+                                <text x="280" y="352" text-anchor="middle" class="motor-state-text" id="status-motor-a">OFF</text>
+                            </g>
+
+                            <!-- Motor B: Small Motor (Sump to Kitchen) -->
+                            <g id="node-motor-b" class="motor-group">
+                                <rect x="650" y="355" width="60" height="50" rx="5" class="motor-body" />
+                                <circle cx="680" cy="380" r="16" class="motor-fan" />
+                                <path d="M 680,364 L 680,396 M 664,380 L 696,380" class="motor-fan-blades" id="fan-motor-b" />
+                                <text x="680" y="340" text-anchor="middle" class="motor-label">Motor B (Small)</text>
+                                <text x="680" y="422" text-anchor="middle" class="motor-state-text" id="status-motor-b">OFF</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Simulation Controls (Water Draw Simulator) -->
+                <div class="card glassmorphic sim-control-card">
+                    <div class="card-header">
+                        <h3>Water Usage & Simulation Settings</h3>
+                        <span class="pulse-glow simulator-label">Interactive Simulation Mode</span>
+                    </div>
+                    <div class="sim-controls-grid">
+                        <div class="control-group">
+                            <label for="slider-bathroom-draw">Bathroom Usage (L/m): <span id="val-bathroom-draw">1.5</span></label>
+                            <input type="range" id="slider-bathroom-draw" min="0" max="10" step="0.5" value="1.5">
+                        </div>
+                        <div class="control-group">
+                            <label for="slider-kitchen-draw">Kitchen Usage (L/m): <span id="val-kitchen-draw">0.8</span></label>
+                            <input type="range" id="slider-kitchen-draw" min="0" max="5" step="0.1" value="0.8">
+                        </div>
+                        <div class="control-group">
+                            <label for="select-muni-supply">Municipal Connection:</label>
+                            <select id="select-muni-supply">
+                                <option value="available">Available (Constant Flow)</option>
+                                <option value="intermittent" selected>Intermittent (Off/On cycle)</option>
+                                <option value="empty">Dry / Not Connected</option>
+                            </select>
+                        </div>
+                        <div class="control-group action-buttons-row">
+                            <button id="btn-trigger-rain" class="btn btn-secondary">Simulate Heavy Sump Rainwater Inflow (+500L)</button>
+                            <button id="btn-reset-sim" class="btn btn-danger">Reset All Water Levels</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Unified Control Panel & Config -->
+            <section class="controls-section">
+                <!-- Mode Controller -->
+                <div class="card glassmorphic system-mode-card">
+                    <div class="system-mode-flex">
+                        <div>
+                            <h2>Control Mode</h2>
+                            <p class="description">Automatic uses sensor cutoffs; Manual gives full override control.</p>
+                        </div>
+                        <div class="mode-switch-wrapper">
+                            <span class="mode-label active" id="label-mode-auto">AUTO</span>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-system-mode">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="mode-label" id="label-mode-manual">MANUAL</span>
+                        </div>
+                    </div>
+                    <div id="safety-e-stop-wrapper">
+                        <button id="btn-emergency-stop" class="btn btn-danger btn-block">EMERGENCY STOP (ALL MOTORS OFF)</button>
+                    </div>
+                </div>
+
+                <!-- Unified Control Panel Tabs -->
+                <div class="tabs-container card glassmorphic">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" data-tab="tab-dashboard" id="btn-tab-dashboard">Dashboard</button>
+                        <button class="tab-btn" data-tab="tab-automation" id="btn-tab-automation">Automation Rules</button>
+                        <button class="tab-btn" data-tab="tab-hardware" id="btn-tab-hardware">ESP32 & Hardware</button>
+                    </div>
+
+                    <div class="tabs-content">
+                        <!-- TAB: Dashboard Controls -->
+                        <div class="tab-pane active" id="tab-dashboard">
+                            <!-- Motor A Control Panel -->
+                            <div class="control-panel-sub">
+                                <div class="panel-header">
+                                    <h3>Motor A Panel (Big Pump)</h3>
+                                    <span class="indicator-badge state-off" id="badge-motor-a">OFF</span>
+                                </div>
+                                <p class="help-text">Used to fill the reservoir from Outside or pump from the Reservoir to the Bathroom tanks.</p>
+                                
+                                <div class="valve-control-panel">
+                                    <div class="valve-switch-group">
+                                        <label>Valve A1 (Intake Source)</label>
+                                        <div class="btn-group-toggle">
+                                            <button id="btn-a1-outside" class="btn-toggle active">OUTSIDE MUNI</button>
+                                            <button id="btn-a1-sump" class="btn-toggle">UNDERGROUND RES</button>
+                                        </div>
+                                    </div>
+                                    <div class="valve-switch-group">
+                                        <label>Valve A2 (Output Target)</label>
+                                        <div class="btn-group-toggle">
+                                            <button id="btn-a2-sump" class="btn-toggle active">UNDERGROUND RES</button>
+                                            <button id="btn-a2-terrace" class="btn-toggle">TERRACE BATHROOMS</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="action-buttons-row margin-top">
+                                    <button id="btn-motor-a-on" class="btn btn-primary">Start Motor A</button>
+                                    <button id="btn-motor-a-off" class="btn btn-outline">Stop Motor A</button>
+                                </div>
+                                <div class="dry-run-status text-danger hidden" id="motor-a-lockout-alert">
+                                    ⚠️ Sump level too low! Dry run lockout active.
+                                </div>
+                            </div>
+
+                            <!-- Motor B Control Panel -->
+                            <div class="control-panel-sub border-top">
+                                <div class="panel-header">
+                                    <h3>Motor B Panel (Small Pump)</h3>
+                                    <span class="indicator-badge state-off" id="badge-motor-b">OFF</span>
+                                </div>
+                                <p class="help-text">Direct pump from the Underground Reservoir to the Kitchen overhead tank.</p>
+
+                                <div class="action-buttons-row margin-top">
+                                    <button id="btn-motor-b-on" class="btn btn-primary">Start Motor B</button>
+                                    <button id="btn-motor-b-off" class="btn btn-outline">Stop Motor B</button>
+                                </div>
+                                <div class="dry-run-status text-danger hidden" id="motor-b-lockout-alert">
+                                    ⚠️ Reservoir empty! Dry run protection triggered.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB: Automation Rules Configuration -->
+                        <div class="tab-pane" id="tab-automation">
+                            <div class="settings-module">
+                                <h3>Safety Thresholds</h3>
+                                <div class="setting-item">
+                                    <label for="input-dryrun-threshold">Reservoir Sump Dry-Run Cutoff (%):</label>
+                                    <input type="number" id="input-dryrun-threshold" min="5" max="30" value="10">
+                                </div>
+                                <p class="hint">Motors immediately stop if the reservoir level falls below this threshold to protect pump impellers.</p>
+                            </div>
+
+                            <div class="settings-module border-top">
+                                <h3>Terrace Bathroom Tanks (2000L Unified)</h3>
+                                <div class="setting-grid">
+                                    <div class="setting-item">
+                                        <label for="input-bath-low">Start Auto Fill Below (%):</label>
+                                        <input type="number" id="input-bath-low" min="10" max="60" value="25">
+                                    </div>
+                                    <div class="setting-item">
+                                        <label for="input-bath-high">Stop Auto Fill Above (%):</label>
+                                        <input type="number" id="input-bath-high" min="70" max="98" value="95">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-module border-top">
+                                <h3>Kitchen Overhead Tank (800L)</h3>
+                                <div class="setting-grid">
+                                    <div class="setting-item">
+                                        <label for="input-kitchen-low">Start Auto Fill Below (%):</label>
+                                        <input type="number" id="input-kitchen-low" min="10" max="60" value="30">
+                                    </div>
+                                    <div class="setting-item">
+                                        <label for="input-kitchen-high">Stop Auto Fill Above (%):</label>
+                                        <input type="number" id="input-kitchen-high" min="70" max="98" value="95">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-module border-top">
+                                <h3>Outside Supply Smart Logic</h3>
+                                <div class="flex-row-space-between">
+                                    <label for="toggle-smart-municipal">Auto-draw from Outside Muni when available:</label>
+                                    <label class="switch-small">
+                                        <input type="checkbox" id="toggle-smart-municipal" checked>
+                                        <span class="slider-small round"></span>
+                                    </label>
+                                </div>
+                                <p class="hint">When municipal connection water pressure is detected (Source state: ON), Motor A will automatically prioritize filling the Reservoir Sump up to 90%.</p>
+                            </div>
+                        </div>
+
+                        <!-- TAB: Hardware Schematic & firmware -->
+                        <div class="tab-pane" id="tab-hardware">
+                            <div class="hardware-info-module">
+                                <h3>ESP32 Pin Configuration</h3>
+                                <table class="pin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Pin</th>
+                                            <th>Hardware Device</th>
+                                            <th>Type</th>
+                                            <th>Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>GPIO 4</strong></td>
+                                            <td>Ultrasonic Sump (Trig/Echo)</td>
+                                            <td>I/O (Shared/2-Wire)</td>
+                                            <td>JSN-SR04T Waterproof</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 16</strong></td>
+                                            <td>Ultrasonic Bathroom 1 (Trig)</td>
+                                            <td>Trigger Output</td>
+                                            <td>Top of Bath Tank 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 17</strong></td>
+                                            <td>Ultrasonic Bathroom 1 (Echo)</td>
+                                            <td>Echo Input</td>
+                                            <td>Top of Bath Tank 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 18</strong></td>
+                                            <td>Ultrasonic Kitchen (Trig)</td>
+                                            <td>Trigger Output</td>
+                                            <td>Top of Kitchen Tank</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 19</strong></td>
+                                            <td>Ultrasonic Kitchen (Echo)</td>
+                                            <td>Echo Input</td>
+                                            <td>Top of Kitchen Tank</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 25</strong></td>
+                                            <td>Motor A Relay</td>
+                                            <td>Output (Active High)</td>
+                                            <td>Switches 2HP Motor power</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 26</strong></td>
+                                            <td>Motor B Relay</td>
+                                            <td>Output (Active High)</td>
+                                            <td>Switches 0.5HP Motor power</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 27</strong></td>
+                                            <td>Solenoid Valve A1 (Intake)</td>
+                                            <td>Output (Active High)</td>
+                                            <td>LOW = Outside, HIGH = Sump</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 14</strong></td>
+                                            <td>Solenoid Valve A2 (Output)</td>
+                                            <td>Output (Active High)</td>
+                                            <td>LOW = Sump, HIGH = Terrace</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>GPIO 34</strong></td>
+                                            <td>Municipal Flow Sensor</td>
+                                            <td>Input (Interrupt)</td>
+                                            <td>Detects flow on municipal line</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="hardware-info-module border-top">
+                                <div class="flex-row-space-between align-center">
+                                    <h3>ESP32 Microcontroller Code</h3>
+                                    <button id="btn-copy-code" class="btn btn-secondary btn-sm">Copy Arduino Code</button>
+                                </div>
+                                <p class="help-text">Upload this code to your ESP32. It initializes a local WebServer with a REST API so this dashboard (or Home Assistant) can monitor and control the system.</p>
+                                <pre class="code-container"><code class="language-cpp" id="arduino-code-block">Loading code...</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logger Console -->
+                <div class="card glassmorphic console-card">
+                    <div class="console-header">
+                        <h3>Event Log & Alerts Console</h3>
+                        <button id="btn-clear-console" class="btn-text">Clear Logs</button>
+                    </div>
+                    <div class="console-body" id="console-log-output">
+                        <div class="log-entry system-info">[13:54:00] Waterways automated panel loaded in Simulator Mode.</div>
+                        <div class="log-entry system-info">[13:54:01] Ultrasonic telemetry calibrating. Sump dry-run lockout armed.</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript Loader -->
+    <script src="app.js"></script>
+</body>
+</html>

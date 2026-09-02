@@ -1,0 +1,1275 @@
+/* Waterways Modern Dark UI Styling */
+:root {
+    --bg-dark: #080b11;
+    --card-bg: rgba(13, 20, 35, 0.6);
+    --border-color: rgba(56, 189, 248, 0.15);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-blue: #0ea5e9;
+    --accent-cyan: #06b6d4;
+    --accent-teal: #14b8a6;
+    --accent-green: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-danger: #ef4444;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --shadow-neon: 0 0 15px rgba(14, 165, 233, 0.35);
+    --shadow-green: 0 0 15px rgba(16, 185, 129, 0.4);
+    --shadow-red: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    padding: 20px;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(20, 184, 166, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(13, 20, 35, 0.9) 0px, var(--bg-dark) 100%);
+    background-attachment: fixed;
+}
+
+/* App Layout */
+.app-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    color: #fff;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: var(--shadow-neon);
+}
+
+.water-droplet-icon {
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.logo-text h1 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(to right, #ffffff, #93c5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sub-logo {
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: -2px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.header-status {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent-green);
+    box-shadow: 0 0 8px var(--accent-green);
+}
+
+.status-dot.pulsing {
+    animation: statusPulse 1.5s infinite;
+}
+
+.time-display {
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Workspace Grid */
+.app-workspace {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 1100px) {
+    .app-workspace {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* General Cards & Glassmorphism */
+.card {
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glassmorphic {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.card:hover {
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h2, .card-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+}
+
+/* Telemetry Badges */
+.telemetry-badges {
+    display: flex;
+    gap: 8px;
+}
+
+.badge {
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(14, 165, 233, 0.25);
+    color: #bae6fd;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+}
+
+/* Schematic Section */
+.schematic-card {
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.schematic-viewport {
+    flex: 1;
+    background: rgba(5, 8, 16, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.svg-diagram {
+    width: 100%;
+    height: 100%;
+}
+
+/* SVG Pipes Styling */
+.pipe {
+    fill: none;
+    stroke: #1e293b;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pipe-flow {
+    fill: none;
+    stroke: var(--accent-cyan);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 12, 12;
+    stroke-dashoffset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.flow-active {
+    opacity: 1;
+    animation: pipeFlowMove 1s linear infinite;
+}
+
+.flow-reverse {
+    opacity: 1;
+    animation: pipeFlowMoveRev 1s linear infinite;
+}
+
+/* Node Elements */
+.source-node {
+    fill: #1e293b;
+    stroke: var(--text-secondary);
+    stroke-width: 2;
+}
+
+.node-icon-text {
+    font-size: 8px;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    fill: var(--accent-green);
+    cursor: default;
+}
+
+.node-label {
+    font-size: 11px;
+    fill: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Tank Styling */
+.tank-body {
+    fill: rgba(30, 41, 59, 0.4);
+    stroke: rgba(255, 255, 255, 0.15);
+    stroke-width: 3;
+    transition: stroke 0.3s ease;
+}
+
+.tank-node:hover .tank-body {
+    stroke: var(--accent-blue);
+}
+
+.water-fill-rect {
+    transition: height 0.5s cubic-bezier(0.1, 0.8, 0.3, 1), y 0.5s cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+
+.wave-path {
+    transition: d 0.5s cubic-bezier(0.1, 0.8, 0.3, 1), y 0.5s cubic-bezier(0.1, 0.8, 0.3, 1);
+    animation: waveShift 3s ease-in-out infinite alternate;
+}
+
+.tank-label {
+    fill: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.tank-label-small {
+    fill: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.tank-liters {
+    fill: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.tank-liters-small {
+    fill: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.tank-pct {
+    fill: var(--accent-cyan);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.tank-pct-small {
+    fill: var(--accent-cyan);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+/* Valves Styling */
+.valve-housing {
+    fill: #0f172a;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 2;
+    transition: stroke 0.3s ease;
+}
+
+.valve-butterfly {
+    fill: var(--text-secondary);
+    stroke: none;
+    transition: fill 0.3s ease, transform 0.3s ease;
+    transform-origin: 185px 405px; /* dynamically updated or targeted */
+}
+
+/* Specific valve transformations using classes */
+#node-valve-a1 .valve-butterfly {
+    transform-origin: 185px 405px;
+}
+#node-valve-a2 .valve-butterfly {
+    transform-origin: 390px 310px;
+}
+
+.valve-core {
+    fill: #ffffff;
+}
+
+.valve-label {
+    fill: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.valve-status-text {
+    fill: var(--accent-cyan);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* Valve Active States */
+.valve-group.valve-muni .valve-butterfly {
+    fill: var(--accent-blue);
+}
+
+.valve-group.valve-sump .valve-butterfly {
+    fill: var(--accent-teal);
+    transform: rotate(90deg);
+}
+
+.valve-group.valve-terrace .valve-butterfly {
+    fill: var(--accent-cyan);
+    transform: rotate(90deg);
+}
+
+/* Motor Styling */
+.motor-body {
+    fill: #1e293b;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 2;
+    transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+.motor-fan {
+    fill: #0f172a;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 1.5;
+}
+
+.motor-fan-blades {
+    fill: none;
+    stroke: var(--text-secondary);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    transform-origin: center;
+    transition: stroke 0.3s ease;
+}
+
+.motor-label {
+    fill: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.motor-state-text {
+    fill: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: bold;
+    transition: fill 0.3s ease;
+}
+
+/* Active Motor Animations */
+.motor-active .motor-body {
+    fill: #0369a1;
+    stroke: var(--accent-blue);
+    filter: drop-shadow(0 0 5px rgba(14, 165, 233, 0.4));
+}
+
+.motor-active .motor-fan-blades {
+    stroke: #ffffff;
+    animation: fanSpin 0.5s linear infinite;
+}
+
+.motor-active .motor-state-text {
+    fill: var(--accent-green);
+}
+
+#fan-motor-a {
+    transform-origin: 280px 310px;
+}
+
+#fan-motor-b {
+    transform-origin: 680px 380px;
+}
+
+/* Simulation Controls Card styling */
+.sim-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent-blue);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    height: 6px;
+    outline: none;
+}
+
+.control-group select {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.control-group select:focus {
+    border-color: var(--accent-blue);
+}
+
+.action-buttons-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+/* Buttons Styling */
+.btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-neon);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-color);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-red);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 6px;
+}
+
+/* System Mode Card Styling */
+.system-mode-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.system-mode-card h2 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.description {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.mode-switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mode-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.mode-label.active {
+    color: var(--accent-blue);
+    text-shadow: 0 0 10px rgba(14, 165, 233, 0.4);
+}
+
+/* Toggle Switch (System Mode) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--accent-blue);
+    transition: .4s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider {
+    background-color: var(--accent-amber);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--accent-amber);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Small Switch (Smart Municipal Toggle) */
+.switch-small {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+}
+
+.switch-small input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider-small {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.15);
+    transition: .3s;
+}
+
+.slider-small:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+}
+
+input:checked + .slider-small {
+    background-color: var(--accent-teal);
+}
+
+input:checked + .slider-small:before {
+    transform: translateX(16px);
+}
+
+.slider-small.round {
+    border-radius: 20px;
+}
+
+.slider-small.round:before {
+    border-radius: 50%;
+}
+
+/* Tabs Panel Design */
+.tabs-container {
+    padding: 0;
+    overflow: hidden;
+}
+
+.tabs-header {
+    display: flex;
+    background: rgba(15, 23, 42, 0.4);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 14px 0;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.tab-btn.active {
+    color: var(--accent-blue);
+    background: rgba(14, 165, 233, 0.05);
+}
+
+.tab-btn.active:after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--accent-blue), var(--accent-cyan));
+    box-shadow: 0 -2px 10px var(--accent-blue);
+}
+
+.tabs-content {
+    padding: 24px;
+}
+
+.tab-pane {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tab-pane.active {
+    display: flex;
+}
+
+/* Control Panel Sub-sections */
+.control-panel-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-header h3 {
+    font-size: 15px;
+    color: #ffffff;
+}
+
+.indicator-badge {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.indicator-badge.state-off {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+}
+
+.indicator-badge.state-active {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: var(--accent-green);
+    animation: statusPulse 1.5s infinite;
+}
+
+.indicator-badge.state-alert {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.25);
+    color: var(--accent-danger);
+}
+
+.help-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.valve-control-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    background: rgba(15, 23, 42, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.valve-switch-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.valve-switch-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* Button Group Toggle (Valves) */
+.btn-group-toggle {
+    display: flex;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-toggle {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.6);
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px 4px;
+    font-size: 10px;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.btn-toggle.active {
+    background: var(--accent-blue);
+    color: #ffffff;
+}
+
+.btn-toggle:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.border-top {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 20px;
+}
+
+.margin-top {
+    margin-top: 10px;
+}
+
+.dry-run-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px;
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+/* Settings Module */
+.settings-module {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.settings-module h3 {
+    font-size: 14px;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.setting-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.setting-item label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.setting-item input[type="number"] {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.setting-item input[type="number"]:focus {
+    border-color: var(--accent-blue);
+}
+
+.hint {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.flex-row-space-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.align-center {
+    align-items: center;
+}
+
+/* Hardware Config Styles */
+.hardware-info-module {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.pin-table th {
+    background: rgba(15, 23, 42, 0.5);
+    color: var(--text-primary);
+    text-align: left;
+    padding: 8px;
+    font-weight: 700;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.pin-table td {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+}
+
+.pin-table tr:hover td {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.code-container {
+    background: rgba(5, 8, 16, 0.85);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+#arduino-code-block {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #bae6fd;
+    white-space: pre;
+}
+
+/* Console Logger Card */
+.console-card {
+    height: 180px;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.console-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.btn-text {
+    background: none;
+    border: none;
+    color: var(--accent-blue);
+    font-size: 11px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-weight: 600;
+}
+
+.btn-text:hover {
+    text-decoration: underline;
+}
+
+.console-body {
+    flex: 1;
+    background: rgba(5, 8, 16, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 10px;
+    overflow-y: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.log-entry {
+    color: var(--text-secondary);
+    word-break: break-all;
+}
+
+.log-entry.system-info {
+    color: var(--accent-cyan);
+}
+
+.log-entry.system-action {
+    color: var(--accent-green);
+}
+
+.log-entry.system-warning {
+    color: var(--accent-amber);
+}
+
+.log-entry.system-danger {
+    color: var(--accent-danger);
+    font-weight: bold;
+}
+
+/* Helpers */
+.hidden {
+    display: none !important;
+}
+
+.text-danger {
+    color: var(--accent-danger);
+}
+
+.text-success {
+    color: var(--accent-green);
+}
+
+/* Animations Keyframes */
+@keyframes statusPulse {
+    0% {
+        opacity: 0.4;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+    }
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 10px 4px rgba(16, 185, 129, 0.3);
+    }
+    100% {
+        opacity: 0.4;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+@keyframes fanSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pipeFlowMove {
+    0% {
+        stroke-dashoffset: 24;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes pipeFlowMoveRev {
+    0% {
+        stroke-dashoffset: 0;
+    }
+    100% {
+        stroke-dashoffset: 24;
+    }
+}
+
+@keyframes waveShift {
+    0% {
+        transform: translateX(-5px);
+    }
+    100% {
+        transform: translateX(5px);
+    }
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .app-container {
+        gap: 12px;
+    }
+    
+    .app-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .header-status {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .status-indicator {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .schematic-card {
+        height: auto;
+    }
+    
+    .schematic-viewport {
+        aspect-ratio: 3 / 2;
+        width: 100%;
+        height: auto;
+        min-height: unset;
+    }
+    
+    .card {
+        padding: 16px;
+        gap: 16px;
+    }
+    
+    .sim-controls-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons-row {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+    
+    .action-buttons-row .btn {
+        width: 100%;
+    }
+    
+    .valve-control-panel {
+        grid-template-columns: 1fr;
+    }
+    
+    .setting-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hardware-info-module {
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .pin-table {
+        min-width: 500px; /* Force horizontal scroll for readability */
+    }
+    
+    .code-container {
+        overflow-x: auto;
+    }
+    
+    .tabs-header {
+        overflow-x: auto;
+        white-space: nowrap;
+        justify-content: flex-start;
+    }
+    
+    .tab-btn {
+        padding: 14px 20px;
+        flex: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-text h1 {
+        font-size: 18px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .telemetry-badges {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
